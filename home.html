@@ -14,6 +14,34 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
 </head>
 <body>
+    <div class="container py-5 mb-5">
+        <h2 class="mb-3">Formulário de receitas médicas</h2>
+        <div class="row my-3">
+            <div class="col">
+                <label for="nome" class="form-label">Nome Completo</label>
+                <input type="nome" class="form-control" id="nome">
+            </div>
+            <div class="col">
+                <label for="dataHora" class="form-label">Data</label>
+                <input type="date" class="form-control" id="dataHora">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <label for="textarea" class="form-label">Remedios e informações adicionais</label>
+                <textarea class="form-control" id="textarea" rows="3"></textarea>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col">
+                <button class="btn btn-primary" id="enviar" onclick="refreshDiv()">Enviar texto</button>
+            </div>
+            <div class="col">
+                <button class="btn btn-danger" id="download-button">Baixar PDF</button>
+            </div>
+        </div>
+        <div class="cl"></div>
+    </div>
     <div id="invoice">
         <div class="container mx-5 my-2">
             <div class="row mt-4">
@@ -30,9 +58,18 @@
         </div>
         <div class="container">
             <div class="teste m-3">
-                <div class="m-5 row">
-                    <div id="em"></div>
-                    <div id="12"></div>
+                <div class="mt-5 mx-3 row">
+                    <div class="col-sm-9">
+                        <div class="ml-3" id="localNome"></div>
+                    </div>
+                    <div class="col">
+                        <div class="" id="localData"></div>
+                    </div>
+                </div>
+                <div class="row mt-3 mx-3">
+                    <div class="col">
+                        <div class="text-left" id="localTextarea"></div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -47,5 +84,59 @@
         </div>
     </div>
 </body>
-<script src="js/index.js"></script>
+<script>
+    const button = document.getElementById('download-button');
+const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul","Ago","Set","Out","Nov","Dez"];
+
+function refreshDiv() {
+    const email = document.getElementById('nome').value;
+    const dataHora = document.getElementById('dataHora').value;
+    const textArea = document.getElementById('textarea').value;
+    var dataObj = new Date(dataHora);
+    let dataFormatada = validaData(dataObj);
+
+    document.getElementById('localNome').innerHTML = email;
+    document.getElementById('localData').innerHTML = dataFormatada;
+    document.getElementById('localTextarea').innerHTML = textArea;
+}
+
+function validaData(dataObj) {
+    if(isNaN(dataObj)) {
+        return " ";
+    } else {
+        return "Data: "+(((dataObj.getDate()+1) + " " + meses[(dataObj.getMonth())] + " " + dataObj.getFullYear()));
+    }
+}
+
+function generatePDF() {
+    // Choose the element that your content will be rendered to.
+    const element = document.getElementById('invoice');
+
+    var opt = {
+        margin:       0,
+        filename:     'receita.pdf',
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 1 },
+        jsPDF:        { unit: 'in', format: 'letter', orientation: 'portrait' }
+        };
+    // Choose the element and save the PDF for your user.
+    html2pdf().set(opt).from(element).save();
+}
+button.addEventListener('click', generatePDF);
+</script>
+<style>
+    .teste{
+    border-radius: 30px;
+    border-style: solid;
+    border-width: 1px;
+    height: 770px;
+}
+.img{
+    width: 100px;
+}
+
+.cl{
+    height: 50px;
+}
+</style>
 </html>
